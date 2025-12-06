@@ -18,6 +18,25 @@ docker-compose up -d
 docker-compose ps
 ```
 
+## Настройка токена для Kibana (после первого запуска)
+
+```bash
+# 1. Создать .env с паролем Elasticsearch
+echo "ELASTIC_PASSWORD=your_password" > .env
+
+# 2. Запустить только Elasticsearch
+docker-compose up -d elasticsearch
+
+# 3. Подождать 30 сек, затем создать токен для Kibana
+docker exec -it elasticsearch bin/elasticsearch-service-tokens create elastic/kibana kibana-token
+
+# 4. Скопировать токен и добавить в .env
+echo "KIBANA_SERVICE_TOKEN=токен_из_вывода" >> .env
+
+# 5. Запустить остальные сервисы
+docker-compose up -d
+```
+
 ## Вход в Kibana
 
 - URL: `http://IP_СЕРВЕРА:5601`
