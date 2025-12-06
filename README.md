@@ -68,3 +68,46 @@ output.logstash:
 sudo systemctl enable filebeat
 sudo systemctl start filebeat
 ```
+
+## Автоудаление логов старше 30 дней
+
+В Kibana → **Dev Tools** выполнить:
+
+```
+PUT _ilm/policy/delete-30-days
+{
+  "policy": {
+    "phases": {
+      "delete": {
+        "min_age": "30d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}
+```
+
+Создать шаблон для автоприменения политики к новым индексам:
+
+```
+PUT _index_template/printegy-template
+{
+  "index_patterns": ["printegy-*"],
+  "template": {
+    "settings": {
+      "index.lifecycle.name": "delete-30-days"
+    }
+  }
+}
+```
+
+Применить политику к существующим индексам:
+
+```
+PUT printegy-*/_settings
+{
+  "index.lifecycle.name": "delete-30-days"
+}
+```
