@@ -1,0 +1,51 @@
+# ELK Stack
+
+## Установка на VPS
+
+```bash
+# Настроить систему для Elasticsearch
+sudo sysctl -w vm.max_map_count=262144
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+
+# Запуск
+docker-compose up -d
+
+# Проверка
+docker-compose ps
+```
+
+## Открытые порты
+
+| Порт | Сервис   | Назначение               |
+|------|----------|--------------------------|
+| 5044 | Logstash | Приём логов от Filebeat  |
+| 5601 | Kibana   | Веб-интерфейс            |
+
+Kibana: `http://IP_СЕРВЕРА:5601`
+
+## Установка Filebeat на серверах с логами
+
+```bash
+curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.12.0-amd64.deb
+sudo dpkg -i filebeat-8.12.0-amd64.deb
+sudo nano /etc/filebeat/filebeat.yml
+```
+
+Содержимое filebeat.yml:
+
+```yaml
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/*.log
+      - /var/log/*.log
+
+output.logstash:
+  hosts: ["IP_VPS_С_ELK:5044"]
+```
+
+```bash
+sudo systemctl enable filebeat
+sudo systemctl start filebeat
+```
