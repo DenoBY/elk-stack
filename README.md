@@ -1,40 +1,33 @@
 # ELK Stack
 
-## Установка на VPS
+## Первый запуск
 
 ```bash
-# Настроить систему для Elasticsearch
+# 1. Настроить систему для Elasticsearch
 sudo sysctl -w vm.max_map_count=262144
 echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
 
-# Создать файл с паролями
-cp .env.example .env
-nano .env  # Установить свои пароли
+# 2. Создать .env с паролем
+echo "ELASTIC_PASSWORD=ваш_сложный_пароль" > .env
 
-# Запуск
-docker-compose up -d
-
-# Проверка
-docker-compose ps
-```
-
-## Настройка токена для Kibana (после первого запуска)
-
-```bash
-# 1. Создать .env с паролем Elasticsearch
-echo "ELASTIC_PASSWORD=your_password" > .env
-
-# 2. Запустить только Elasticsearch
+# 3. Запустить только Elasticsearch
 docker-compose up -d elasticsearch
 
-# 3. Подождать 30 сек, затем создать токен для Kibana
+# 4. Подождать ~1 минуту пока запустится, проверить:
+docker-compose logs elasticsearch | tail -5
+# Должно быть "license ... valid" без ошибок
+
+# 5. Создать токен для Kibana
 docker exec -it elasticsearch bin/elasticsearch-service-tokens create elastic/kibana kibana-token
 
-# 4. Скопировать токен и добавить в .env
-echo "KIBANA_SERVICE_TOKEN=токен_из_вывода" >> .env
+# 6. Скопировать токен (строка после SERVICE_TOKEN =) и добавить в .env
+echo "KIBANA_SERVICE_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL..." >> .env
 
-# 5. Запустить остальные сервисы
+# 7. Запустить остальные сервисы
 docker-compose up -d
+
+# 8. Проверить статус (все должны быть Up)
+docker-compose ps
 ```
 
 ## Вход в Kibana
@@ -43,24 +36,21 @@ docker-compose up -d
 - Логин: `elastic`
 - Пароль: значение `ELASTIC_PASSWORD` из `.env`
 
-## Открытые порты
+## Порты
 
 | Порт | Сервис   | Назначение               |
 |------|----------|--------------------------|
 | 5044 | Logstash | Приём логов от Filebeat  |
 | 5601 | Kibana   | Веб-интерфейс            |
 
-Kibana: `http://IP_СЕРВЕРА:5601`
-
-## Установка Filebeat на серверах с логами
+## Установка Filebeat (на серверах с логами)
 
 ```bash
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.12.0-amd64.deb
 sudo dpkg -i filebeat-8.12.0-amd64.deb
-sudo nano /etc/filebeat/filebeat.yml
 ```
 
-Содержимое filebeat.yml:
+Настроить `/etc/filebeat/filebeat.yml`:
 
 ```yaml
 filebeat.inputs:
