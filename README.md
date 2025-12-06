@@ -18,18 +18,6 @@ docker-compose up -d
 docker-compose ps
 ```
 
-## Настройка паролей (после первого запуска)
-
-```bash
-# 1. Установить пароль для kibana_system пользователя
-docker exec -it elasticsearch bin/elasticsearch-reset-password -u kibana_system -i
-
-# Ввести пароль который указали в .env как KIBANA_PASSWORD
-
-# 2. Перезапустить Kibana
-docker-compose restart kibana
-```
-
 ## Вход в Kibana
 
 - URL: `http://IP_СЕРВЕРА:5601`
