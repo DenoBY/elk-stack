@@ -1,3 +1,6 @@
+# Имя сервера (поменять на каждом сервере)
+name: "prod-server-1"
+
 filebeat.inputs:
   # Nginx access logs
   - type: log
