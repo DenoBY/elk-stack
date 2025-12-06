@@ -15,24 +15,6 @@
               "ignore_above": 8192
             }
           }
-        },
-        "laravel_message": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 8192
-            }
-          }
-        },
-        "error_message": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 8192
-            }
-          }
         }
       }
     }
