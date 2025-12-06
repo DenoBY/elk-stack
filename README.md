@@ -111,3 +111,9 @@ PUT printegy-*/_settings
   "index.lifecycle.name": "delete-30-days"
 }
 ```
+
+Проверить что политика применилась:
+
+```
+GET printegy-*/_settings?filter_path=*.settings.index.lifecycle
+```
