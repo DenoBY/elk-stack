@@ -1,0 +1,55 @@
+filebeat.inputs:
+  # Nginx access logs
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/access.log
+      - /var/log/nginx/*-access.log
+    fields:
+      type: nginx-access
+    fields_under_root: true
+
+  # Nginx error logs
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/error.log
+      - /var/log/nginx/*-error.log
+    fields:
+      type: nginx-error
+    fields_under_root: true
+
+  # PHP-FPM logs
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/php*-fpm.log
+      - /var/log/php-fpm/*.log
+    fields:
+      type: php-fpm
+    fields_under_root: true
+
+  # Laravel logs
+  - type: log
+    enabled: true
+    paths:
+      - /var/www/*/storage/logs/*.log
+      - /home/*/www/*/storage/logs/*.log
+    fields:
+      type: laravel
+    fields_under_root: true
+    multiline:
+      pattern: '^\[\d{4}-\d{2}-\d{2}'
+      negate: true
+      match: after
+
+output.logstash:
+  hosts: ["IP_VPS_С_ELK:5044"]
+
+logging:
+  level: info
+  to_files: true
+  files:
+    path: /var/log/filebeat
+    name: filebeat
+    keepfiles: 3
