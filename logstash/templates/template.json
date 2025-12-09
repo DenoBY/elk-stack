@@ -17,7 +17,7 @@
             }
           }
         },
-        "error_short": {
+        "message_short": {
           "type": "keyword"
         }
       }
