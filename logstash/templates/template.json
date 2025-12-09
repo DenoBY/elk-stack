@@ -1,6 +1,6 @@
 {
   "index_patterns": ["*-nginx-*", "*-laravel-*", "*-php-fpm-*"],
-  "priority": 200,
+  "priority": 500,
   "template": {
     "settings": {
       "number_of_shards": 1,
@@ -16,6 +16,9 @@
               "ignore_above": 8192
             }
           }
+        },
+        "error_short": {
+          "type": "keyword"
         }
       }
     }
